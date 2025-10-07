@@ -1,0 +1,86 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json",
+  "description": "Isotype-style: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003–2021. Increased horizontal spacing for emojis.",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/forest_coerage_clean.csv",
+    "format": {"type": "csv"}
+  },
+  "params": [
+    {
+      "name": "Choose_Year",
+      "value": 2003,
+      "bind": {"input": "range", "min": 2003, "max": 2021, "step": 1},
+      "description": "Choose year"
+    }
+  ],
+  "transform": [
+    {
+      "calculate": "toNumber(substring(datum.date, 0, 4))",
+      "as": "year"
+    },
+    {
+      "filter": "datum.year == Choose_Year"
+    },
+    {
+      "calculate": "min(7, ceil(toNumber(datum.forest_cover_rate_percentage) / 10))",
+      "as": "nIcons"
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "name",
+      "type": "nominal",
+      "title": "States",
+      "sort": {"field": "forest_cover_rate_percentage", "op": "mean", "order": "descending"}
+    },
+    "tooltip": [
+      {"field": "name", "type": "nominal", "title": "State"},
+      {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest cover (%)"},
+      {"field": "nIcons", "type": "quantitative", "title": "Number of trees (per 10%)"}
+    ]
+  },
+  "layer": [
+    {
+      "transform": [{"filter": "datum.nIcons >= 1"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 20}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 2"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 60}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 3"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 100}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 4"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 140}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 5"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 180}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 6"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 220}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 7"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 260}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    }
+  ],
+  "width": 500,
+  "height": {"step": 30},
+  "title": "Malaysia Permanent Forest Coverage from 2003 to 2021",
+  "config": {
+    "axis": {"labelFontSize": 12, "titleFontSize": 13},
+    "title": {"fontSize": 14}
+  }
+}
