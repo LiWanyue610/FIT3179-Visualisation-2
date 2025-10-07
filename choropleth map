@@ -5,7 +5,7 @@
             "height": 400,
             "background": "#cfeeff",
 
-            "projection": { "type": "mercator", "center": [109, 4], "scale": 2200 },
+            "projection": { "type": "mercator", "center": [109, 4], "scale": 2000 },
 
             "params": [
                 {
@@ -70,7 +70,7 @@
                         "domain": [10, 20, 30, 40, 50, 60],
                         "range": ["#EBFAEA", "#A3EA9F", "#5AD954", "#2CAB26", "#23861D", "#196015", "#051505"]
                     },
-                    "legend": { "orient": "right", "titleLimit": 200, "symbolType": "square" }
+                    "legend": { "orient": "top", "titleLimit": 200, "symbolType": "square" }
                     },
                     "tooltip": [
                     { "field": "state_key", "type": "nominal", "title": "State:" },
