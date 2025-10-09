@@ -1,0 +1,82 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Malaysia Air Pollution Index (Maximum) by State, 1998–2020",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/Air_Pollution_Index.csv",
+    "format": {"type": "csv"}
+  },
+  "width": 780,
+  "height": 420,
+  "transform": [
+    {"filter": "datum.Year >= 1998 && datum.Year <= 2020"},
+    {
+      "filter": {
+        "field": "State",
+        "oneOf": [
+          "Melaka",
+          "W.P. Kuala Lumpur",
+          "Sabah",
+          "Johor",
+          "Sarawak",
+          "Pulau Pinang"
+        ]
+      }
+    }
+  ],
+  "layer": [
+    {
+      "mark": {"type": "line", "strokeWidth": 2, "point": {"filled": true, "size": 60}},
+      "encoding": {
+        "x": {"field": "Year", "type": "quantitative", "title": "Year", "axis": {"format": "d", "tickMinStep": 1}},
+        "y": {"field": "Maximum", "type": "quantitative", "title": "Maximum API"},
+        "color": {
+          "field": "State",
+          "type": "nominal",
+          "legend": {"title": "State", "orient": "top"},
+          "scale": {
+            "domain": ["Melaka","W.P. Kuala Lumpur","Sabah","Johor","Sarawak","Pulau Pinang"],
+            "range": ["#FFA500","#808080","#8DB4CC","#21506E","#C92D26","#287CAD"]
+          }
+        },
+        "tooltip": [
+          {"field": "State", "type": "nominal", "title": "State"},
+          {"field": "Year", "type": "quantitative", "title": "Year"},
+          {"field": "Maximum", "type": "quantitative", "title": "Maximum"}
+        ]
+      }
+    },
+
+    {
+      "data": {"values": [
+        {"x": 2020, "y": 200, "y2": 450}  
+      ]},
+      "mark": {"type": "line", "stroke": "#000c03", "strokeWidth": 2},
+      "encoding": {
+        "x": {"field": "x", "type": "quantitative"},
+        "y": {"field": "y", "type": "quantitative"},
+        "y2": {"field": "y2", "type": "quantitative"}
+      }
+    },
+
+    {
+      "data": {"values": [{}]},
+      "mark": {"type": "rect", "fill": null, "stroke": "#000c03", "strokeWidth": 2},
+      "encoding": {
+        "x": {"datum": 2013},
+        "x2": {"datum": 2020},
+        "y": {"datum": 450},
+        "y2": {"datum": 520}
+      }
+    },
+
+    {
+      "data": {"values": [{}]},
+      "mark": {"type": "text", "align": "left", "fontSize": 12, "fill": "#000c03"},
+      "encoding": {
+        "x": {"datum": 2013.5},
+        "y": {"datum": 495},
+        "text": {"value":   ["In 2020, the maximum API values across", "the states were most closely aligned."]}
+      }
+    }
+  ]
+}
