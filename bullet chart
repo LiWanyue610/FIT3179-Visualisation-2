@@ -31,25 +31,110 @@
       }
     },
     {
-  "transform": [
-    {
-      "aggregate": [
-        {"op": "mean", "field": "forest_cover_rate_percentage", "as": "avg_2003_2021"}
+      "transform": [
+        {
+          "aggregate": [
+            {"op": "mean", "field": "forest_cover_rate_percentage", "as": "avg_2003_2021"}
+          ],
+          "groupby": ["name"]
+        }
       ],
-      "groupby": ["name"]
-    }
+      "mark": {"type": "tick", "color": "red", "thickness": 3},
+      "encoding": {
+        "x": {"field": "avg_2003_2021", "type": "quantitative"},
+        "y": {"field": "name", "type": "nominal"},
+        "size": {"value": 20},
+        "tooltip": [
+          {"field": "name", "type": "nominal", "title": "State:"},
+          {"field": "avg_2003_2021", "type": "quantitative", "title": "Average Proportion 2003 - 2021 (%):", "format": ".2f"}
+        ]
+      }
+    },
+
+    {
+      "name": "annotation-connector",
+      "transform": [
+        {"filter": {"field": "date", "timeUnit": "year", "equal": 2021}},
+        {"filter": "datum.name === 'Sarawak'"},
+        {"calculate": "datum.forest_cover_rate_percentage + 6", "as": "x_anno"}
+      ],
+      "mark": {
+        "type": "rule",
+        "stroke": "darkgreen",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "y": {"field": "name", "type": "nominal"},
+        "x": {"field": "forest_cover_rate_percentage", "type": "quantitative"},
+        "x2": {"field": "x_anno", "type": "quantitative"}
+      }
+    },
+    {
+  "name": "annotation-box",
+  "transform": [
+    {"filter": {"field": "date", "timeUnit": "year", "equal": 2021}},
+    {"filter": "datum.name === 'Sarawak'"},
+    {"calculate": "datum.forest_cover_rate_percentage + 6", "as": "x_anno"}
   ],
-  "mark": {"type": "tick", "color": "red", "thickness": 3},
+  "mark": {
+    "type": "rect",
+    "width": 220,   
+    "height": 48,       
+    "fillOpacity": 0,
+    "stroke": "darkgreen",
+    "strokeWidth": 1.5,
+    "cornerRadius": 6,
+    "xOffset": 235, 
+    "yOffset": 15 
+  },
   "encoding": {
-    "x": {"field": "avg_2003_2021", "type": "quantitative"},
-    "y": {"field": "name", "type": "nominal"},
-    "size": {"value": 20}, 
-    "tooltip": [
-      {"field": "name", "type": "nominal", "title": "State:"},
-      {"field": "avg_2003_2021", "type": "quantitative", "title": "Average Proportion 2003 - 2021 (%):", "format": ".2f"}
-    ]
+    "x": {"field": "x_anno", "type": "quantitative"},
+    "y": {"field": "name", "type": "nominal"}
   }
 }
+,
+    {
+  "name": "annotation-text",
+  "transform": [
+    {"filter": {"field": "date", "timeUnit": "year", "equal": 2021}},
+    {"filter": "datum.name === 'Sarawak'"},
+    {"calculate": "datum.forest_cover_rate_percentage + 6", "as": "x_anno"}
+  ],
+  "mark": {
+    "type": "text",
+    "align": "left",
+    "baseline": "top",
+    "fontSize": 12,
+    "fontWeight": "normal",
+    "color": "darkgreen",
+    "lineHeight": 14
+  },
+  "encoding": {
+    "x": {"field": "x_anno", "type": "quantitative"},
+    "y": {"field": "name", "type": "nominal"},
+    "xOffset": {"value": 135}, 
+    "yOffset": {"value": 6},
+    "text": {
+      "value": [
+        "Sarawak's forest cover in 2021 differs",
+        "most significantly from the average,",
+        "with a deviation of approximately 4%."
+      ]
+    }
+  }
+}
+,
+    {
+  "name": "custom-line",
+  "mark": {"type": "rule", "stroke": "darkgreen", "strokeWidth": 2},
+  "encoding": {
+    "x": {"datum": 36}, 
+    "x2": {"datum": 43.5},
+    "y": {"datum": "Sarawak", "type": "nominal"}, 
+    "yOffset": {"value": 12}
+  }
+}
+
   ],
   "config": {
     "axis": {"labelFontSize": 12, "titleFontSize": 12},
