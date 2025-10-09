@@ -1,0 +1,76 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Malaysia Air Pollution Index — Min vs Max by State (2020)",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/Air_Pollution_Index.csv",
+    "format": {"type": "csv"}
+  },
+  "width": 760,
+  "height": {"step": 26},
+  "transform": [
+    {"filter": "toNumber(datum.Year) == 2020"},
+    {"calculate": "toNumber(datum.Minimum)", "as": "Minimum_API"},
+    {"calculate": "toNumber(datum.Maximum)", "as": "Maximum_API"},
+    {"calculate": "datum.Maximum_API - datum.Minimum_API", "as": "Diff"}
+  ],
+  "layer": [
+    {
+      "mark": {"type": "rule", "stroke": "black", "strokeWidth": 1.2},
+      "encoding": {
+        "y": {"field": "State", "type": "nominal"},
+        "x": {"field": "Minimum_API", "type": "quantitative", "title": "API"},
+        "x2": {"field": "Maximum_API"},
+        "tooltip": [
+          {"field": "State", "type": "nominal"},
+          {"field": "Minimum_API", "type": "quantitative", "title": "Minimum"},
+          {"field": "Maximum_API", "type": "quantitative", "title": "Maximum"},
+          {"field": "Diff", "type": "quantitative", "title": "Max - Min"}
+        ]
+      }
+    },
+    {
+      "transform": [
+        {"fold": ["Minimum_API", "Maximum_API"], "as": ["Type", "API_Value"]}
+      ],
+      "mark": {"type": "point", "filled": true, "size": 70},
+      "encoding": {
+        "y": {"field": "State", "type": "nominal"},
+        "x": {"field": "API_Value", "type": "quantitative"},
+        "color": {
+          "field": "Type",
+          "type": "nominal",
+          "title": "API Type",
+          "scale": {
+            "domain": ["Maximum_API", "Minimum_API"],
+            "range": ["#470570", "#A72CF5"]
+          },
+          "legend": {"title": "Point"}
+        },
+        "tooltip": [
+          {"field": "State", "type": "nominal"},
+          {"field": "Type", "type": "nominal", "title": "Type"},
+          {"field": "API_Value", "type": "quantitative", "title": "API Value"}
+        ]
+      }
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "State",
+      "type": "nominal",
+      "title": "State",
+      "sort": {"field": "Diff", "op": "max", "order": "descending"}
+    }
+  },
+  "config": {
+    "axis": {
+      "labelFontSize": 12,
+      "titleFontSize": 12
+    },
+    "legend": {
+      "labelFontSize": 12,
+      "titleFontSize": 12,
+      "symbolSize": 100
+    }
+  }
+}
