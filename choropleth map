@@ -30,7 +30,7 @@
             "lookup": "properties.Name",
             "from": {
               "data": {
-                "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week9-Homework/refs/heads/main/cleaned_forest_reserve_state.csv",
+                "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/forest_coverage_clean.csv",
                 "format": {"type": "csv"}
               },
               "key": "name",
