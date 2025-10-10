@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Malaysia Air Pollution Index (Maximum) by State, 1998–2020",
+  "title": "Malaysia Air Pollution Index (Maximum) by State, 1998-2020",
   "data": {
     "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/Air_Pollution_Index.csv",
     "format": {"type": "csv"}
