@@ -1,0 +1,119 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Bubble chart showing relationship between forest coverage and air pollution with a regression trend line and annotations.",
+  "title": "Relationship between Maximum Air Pollution Index and Forest Coverage",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/Coverage_API.csv"
+  },
+  "layer": [
+    {
+      "mark": "circle",
+      "encoding": {
+        "x": {
+          "field": "forest_cover_rate_percentage",
+          "type": "quantitative",
+          "title": "Forest Coverage (%)"
+        },
+        "y": {
+          "field": "Maximum",
+          "type": "quantitative",
+          "title": "Maximum Air Pollution Index (API)"
+        },
+        "size": {
+          "field": "total_area",
+          "type": "quantitative",
+          "scale": {
+            "domain": [0, 12000000],
+            "range": [400, 1000]
+          },
+          "title": "Total Area"
+        },
+        "color": {
+          "field": "State",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Johor", "Melaka", "Pulau Pinang", "Sabah", "Sarawak", "W.P. Kuala Lumpur"],
+            "range": ["#062670", "#ED8A15", "#045161", "#4A9FC7", "#D40808", "#808080"]
+          },
+          "legend": {
+            "title": "State",
+            "symbolSize": 100
+          }
+        },
+        "tooltip": [
+          {"field": "State", "type": "nominal", "title": "State"},
+          {"field": "Maximum", "type": "quantitative", "title": "Maximum API"},
+          {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest Coverage (%)"},
+          {"field": "total_area", "type": "quantitative", "title": "Total Area"}
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "regression": "Maximum",
+          "on": "forest_cover_rate_percentage"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "color": "black",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "forest_cover_rate_percentage",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "Maximum",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "rect",
+        "fill": "transparent",
+        "stroke": "green",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "x": {"value": 50},
+        "x2": {"value": 280},
+        "y": {"value": 200},
+        "y2": {"value": 290}
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "top",
+        "fontSize": 12,
+        "dx": 6,
+        "dy": 6,
+        "color": "green"
+      },
+      "encoding": {
+        "x": {"value": 50},
+        "y": {"value": 200},
+        "text": {
+          "value": ["The data for Sarawak are most pertinent", "with regression line of relationship", "between Max API & Forest Coverage", "demonstrating that the maximum", "air pollution index correlates with forest", "cover at a ratio of approximately 1 : 3."]
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "rule",
+        "stroke": "green",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "x": {"value": 148},   // 控制垂直线的横向位置
+        "y": {"value": 120},   // 起点（下方）
+        "y2": {"value": 200}  // 终点（上方）
+      }
+    }
+  ]
+}
