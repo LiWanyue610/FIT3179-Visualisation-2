@@ -161,6 +161,13 @@
       color: var(--muted);
       font-size: 13.5px;
     }
+    paragraph {
+      margin-top: 44px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--border);
+      color: #010511;
+      font-size: 15px;
+    }
     code.inline {
       background: rgba(255,255,255,0.06);
       border: 1px solid var(--border);
@@ -198,7 +205,6 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="eyebrow">Analysis of Malaysia's Permanent Forest Coverage</div>
       <h1>Analysis of Malaysia's Permanent Forest Coverage</h1>
       <p class="subtitle">Visualisation of Permanent Forest Cover Proportion Across Malaysian States</p>
       <p class="author">Author: Li Wanyue</p>
@@ -227,13 +233,13 @@
         </ul>
       </div>
     </section>
-    <footer>
-        <p>This choropleth map constitutes the most crucial component of this visualisation study (the highest visual level), as it provides readers with the most intuitive and 
+    <paragraph>
+        <p>This choropleth map constitutes the <strong>most crucial component</strong> of this visualisation study (the highest visual level), as it provides readers with the most intuitive and 
             evident representation of Malaysia's forest cover distribution in 2021. Malaysia's forest cover accounts for approximately 54-55% of its total land area, totalling 
             around 18.2 million hectares. Malaysia first committed at the 1992 Rio Earth Summit to maintaining at least 50% of its territory as forest, enshrining this pledge 
             within its National Forest Policy.
         </p>
-      </footer>
+      </paragraph>
     </div>
 
     <!-- Second Row: Isotype and Bullet Chart -->
@@ -242,7 +248,7 @@
       <section class="card" aria-labelledby="iso-title" style="flex: 1;">
         <div class="card__head">
           <div class="kicker">Isotype (2003 - 2021)</div>
-          <h2 id="iso-title">Forest Cover rates for Each State Represented by Emojis🌳 (with Year Slider)</h2>
+          <h2 id="iso-title">Forest Cover Rates for Each State Represented by Emojis🌳 (with Year Slider)</h2>
           <p class="desc">
             Presented using isotype: each tree represents approximately 10% of permanent forest cover. 
             Drag the slider to view a year-on-year comparison for any year between 2003 and 2021.
@@ -283,7 +289,30 @@
             </ul>
         </div>
       </section>
+      <paragraph>
+        <p> <strong>Below is an analysis and visualisation of air pollution conditions in Malaysia.</strong></p>
+        <p>Air pollution has long been a persistent issue for many nations across Southeast Asia, with Malaysia among the most severely affected. Haze has consistently posed a major challenge to the country, stemming from farmers' slash-and-burn practices and peat fires ignited by winds originating from Indonesia. The air quality in Malaysia is reported as the Air Pollution Index (API). Four of the index's pollutant components (i.e., carbon monoxide, ozone, nitrogen dioxide and sulfur dioxide) are reported in ppmv but PM10 particulate matter is reported in μg/m3. 
+        </p>
+        <p>
+            The scale shows the health classification standards used by the Malaysian government:</p>
+            <p>
+                0-50  Good ;
+            </p>
+            <p>
+                51-100 Moderate ;
+            </p>
+            <p>
+                101-200 Unhealthy;
+            </p>
+            <p>
+                201-300 Very unhealthy;
+            </p>
+            <p>
+                301+ Hazardous
+            </p>
+    </paragraph>
     </div>
+    
 
     <!-- Third Row: Line Chart and Dot Plot -->
     <div style="display: flex; gap: 20px;">
@@ -328,31 +357,56 @@
             </ul>
         </div>
       </section>
+      <paragraph>
+
+      </paragraph>
     </div>
 
     <!-- Bottom Row: Bubble Chart -->
     <section class="card" aria-labelledby="bubble-title">
       <div class="card__head">
-        <div class="kicker">Bubble Chart</div>
-        <h2 id="bubble-title">Relationship between Maximum Air Pollution Index and Forest Coverage</h2>
+        <div class="kicker">Bubble Chart (2020)</div>
+        <h2 id="bubble-title">Relationship between Maximum Air Pollution Index and Forest Coverage in 2020</h2>
         <p class="desc">
-          This bubble chart shows the relationship between the maximum air pollution index (API) and the forest coverage percentage across different states.
+          This bubble chart shows the relationship between the maximum air pollution index (API) and the forest coverage percentage across different states in 2020.
         </p>
       </div>
       <div class="viz">
         <div id="viz-bubble" role="img" aria-label="Bubble chart of relationship between Maximum API and forest coverage"></div>
       </div>
+      <div class="caption">
+        <strong>Key Points:</strong>
+        <ul class="keypoints">
+          <li class="chip">Overall, as forest cover increases, the maximum Air Pollution Index (API) across states shows a downward trend. This suggests that areas with higher forest cover may possess better air quality.</li></li>
+          <li class="chip">The data points for the state of Sarawak lie closest to the regression line, indicating a strong linear relationship between the state's air pollution index and its forest cover.</li>
+          <li class="chip">
+            Although the overall trend shows a negative correlation, air pollution levels vary considerably between states, with particularly marked differences observed between Kuala Lumpur and Sarawak. This indicates that air quality in certain states is significantly influenced by forest cover, whereas other states may be affected by different factors.
+          </li>
+        </ul>
+    </div>
     </section>
+    <paragraph>
+            Overall, I have conducted a comprehensive visual analysis of Malaysia's permanent forest cover. The page presents <strong>
+                forest cover data across Malaysian states
+            </strong> and its <strong>
+                relationship with the Air Pollution Index (API)
+            </strong> through multiple charts, including choropleth maps, bullet charts, bubble charts, and so on. Notably, the page highlights Sarawak's data, demonstrating a strong negative correlation between the state's forest cover and its API. Furthermore, by tracking the Air Pollution Index across states from 1998 to 2020, it illustrates trends in air pollution, particularly noting the convergence of pollution levels observed in 2020. Overall, the page employs dynamic, interactive charts to provide readers with a clear understanding of forest cover variations and their intricate relationship with air quality, offering robust data support for environmental research.
+    </paragraph>
 
     <!-- Footer: Data Source Information -->
     <footer>
       <strong>Data Source: </strong>
-      <p>Author: OpenDOSM (Department of National Statistics, Malaysia)</p>
+      <p>Author: OpenDOSM - Department of National Statistics, Malaysia (Forest Coverage); </p>
       <p>Link: 
         <a href = "https://open.dosm.gov.my/data-catalogue/forest_reserve_state">
-        Click here to view the source website.
+        Click here to view the forest coverage source website.
       </a></p>
-      <p>Information: Permanent Forest Reserve Areas by State - Year-end permanent forest reserve areas by state. Data as of 2021.</p>
+      <p>Author: data.gv.my - Malaysia Open Data Portal (Air Pollution Index)</p>
+      <p>
+        Link: <a href = "https://archive.data.gov.my/data/dataset/annual-minimum-and-maximum-air-pollutant-index-for-selected-stations-malaysia/resource/3e2f51e7-518b-47f5-ade3-4956589280ab?view_id=498e47d5-db52-4ed9-8c7b-383d16b5e3e1">
+            Click here to view the air pollution index source website.
+        </a>
+      </p>
     </footer>
   </div>
 
