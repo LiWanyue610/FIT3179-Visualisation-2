@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analysis of Malaysia's Permanent Forest Cover</title>
+
+  <!-- Vega libraries (Vega 5 + Vega-Lite 6 + Vega-Embed 6) -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+  <style>
+    :root {
+      --bg: #ebf6f9;
+      --card: #e5feeb;
+      --muted: #3c7250;
+      --text: #07352b;
+      --accent: #1e9c33;
+      --accent-2: #32434d;
+      --border: rgba(255,255,255,0.12);
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --keypoints: #639976;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 70% -10%, rgba(63,139,255,0.15), transparent) ,
+                  radial-gradient(900px 500px at 10% 120%, rgba(0,255,204,0.08), transparent),
+                  var(--bg);
+      font-family:  "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+    }
+    .wrap {
+      max-width: 100%; /* Allow full width for larger screens */
+      margin: 48px auto 80px;
+      padding: 0 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      background: rgba(255,255,255,0.03);
+    }
+    h1 {
+      font-size: clamp(26px, 4vw, 40px);
+      line-height: 1.15;
+      margin: 0 0 6px 0;
+      letter-spacing: 0.2px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(14px, 2.1vw, 18px);
+      margin-bottom: 8px;
+    }
+    .author {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+
+    .card{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin: 10px 0;
+    flex: 1 1 48%;  /* Allow wrapping and adapt card width */
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    }
+    .card__head {
+      padding: 18px 20px 0;
+    }
+    .kicker {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    h2 {
+      margin: 6px 0 10px;
+      font-size: clamp(18px, 2.6vw, 24px);
+    }
+    .desc {
+      color: var(--muted);
+      margin: 0 0 14px;
+      font-size: 15px;
+    }
+    .viz {
+        padding: 6px 10px;
+        background: radial-gradient(400px 200px at 10% 0%, rgba(123,211,137,0.06), transparent);
+        width: 100%;
+        max-width: 100%;
+        max-width: 700px;  /* Set the max width to match the container size */
+        display: flex;
+        justify-content: center; /* Ensure the chart is centered horizontally */
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    .caption {
+      padding: 2px 20px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      border-top: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+    }
+    .keypoints {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+      background: var(--keypoints);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      color:rgb(240, 255, 253);
+    }
+    .chip {
+      border: 1px dashed var(--border);
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.02);
+      font-size: 13.5px;
+    }
+    footer {
+      margin-top: 44px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+    code.inline {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12.5px;
+      color: #e3f2ff;
+    }
+    .sr-only { position: absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+
+    /* Adjust the card display for the second row */
+    div[style="display: flex; gap: 20px;"] {
+      display: flex;
+      flex-wrap: wrap; /* Allow wrapping for smaller screens */
+      gap: 20px;
+      justify-content: space-between; /* Align items better */
+    }
+
+    @media screen and (max-width: 768px) {
+    /* Stack the cards vertically in smaller screens */
+    .card {
+        flex: 1 1 100%;
+        margin-bottom: 20px; /* Adds space between stacked cards */
+    }
+
+    div[style="display: flex; gap: 20px;"] {
+        flex-direction: column; /* Stack the cards vertically */
+        align-items: center; /* Centers the cards */
+    }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">Analysis of Malaysia's Permanent Forest Coverage</div>
+      <h1>Analysis of Malaysia's Permanent Forest Coverage</h1>
+      <p class="subtitle">Visualisation of Permanent Forest Cover Proportion Across Malaysian States</p>
+      <p class="author">Author: Li Wanyue</p>
+    </header>
+
+    <!-- First Row: Choropleth Map -->
+    <section class="card" aria-labelledby="map-title">
+      <div class="card__head">
+        <div class="kicker">Choropleth Map (2021)</div>
+        <h2 id="map-title">Malaysian State Permanent Forest Coverage in 2021</h2>
+        <p class="desc">
+          This choropleth map depicts state boundaries against a backdrop of a graticule and oceanic base colour, 
+          with areas shaded according to permanent forest cover percentage. Hovering the mouse reveals state names and specific coverage.
+        </p>
+      </div>
+      <div class="viz">
+        <div id="viz-map" role="img" aria-label="2021 Choropleth Map of Permanent Forest Cover by State in Malaysia"></div>
+      </div>
+      <div class="caption">
+        <strong>Key Points:</strong>
+        <ul class="keypoints">
+          <li class="chip">Deeper green means higher forest coverage; The gaps are 10%, 20%, 30%, 40%, 50%, 60%.</li>
+          <li class="chip">Regional differences: Forest cover in Sabah and Sarawak is generally higher than in western Malaysia. 
+            The state with the highest forest cover in the west is Melaka (which also holds the highest forest cover across the whole of Malaysia).</li>
+          <li class="chip">Protection effectiveness: Several states maintain forest cover exceeding 40%, demonstrating effective conservation measures.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Second Row: Isotype and Bullet Chart -->
+    <div style="display: flex; gap: 20px;">
+      <!-- Isotype Section -->
+      <section class="card" aria-labelledby="iso-title" style="flex: 1;">
+        <div class="card__head">
+          <div class="kicker">Isotype (2003 - 2021)</div>
+          <h2 id="iso-title">Forest cover rates for each state represented by emojis🌳 (with year slider)</h2>
+          <p class="desc">
+            Presented using isotype: each tree represents approximately 10% of permanent forest cover. 
+            Drag the slider to view a year-on-year comparison for any year between 2003 and 2021.
+          </p>
+        </div>
+        <div class="viz">
+          <div id="viz-iso" role="img" aria-label="Interactive isotype maps of forest coverage by state, 2003 to 2021"></div>
+        </div>
+        <div class="caption">
+          <strong>Key Points:</strong>
+          <ul class="keypoints">
+            <li class="chip">The number of trees directly corresponds to the coverage rate (one tree per 10%, rounded up).</li>
+            <li class="chip">The data for Sarawak in 2010 and 2011 were not available (NA), so the mean value for Sarawak across the 
+              entire time period was used to impute the missing values during dataset cleaning.</li>
+            <li class="chip">Use the slider to select a year, enabling cross-year comparisons and trend analysis.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Bullet Chart Section -->
+      <section class="card" aria-labelledby="bullet-title" style="flex: 1;">
+        <div class="card__head">
+          <div class="kicker">Bullet Chart (2021)</div>
+          <h2 id="bullet-title">Comparison of Forest Coverage in 2021 with the Overall Average</h2>
+          <p class="desc">
+            This bullet chart compares the forest cover percentage of each state in 2021 against the average forest cover for the entire period of 2003 to 2021.
+          </p>
+        </div>
+        <div class="viz">
+          <div id="viz-bullet" role="img" aria-label="Bullet chart comparing forest coverage with average for 2021"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Third Row: Line Chart and Dot Plot -->
+    <div style="display: flex; gap: 20px;">
+      <!-- Line Chart Section -->
+      <section class="card" aria-labelledby="line-title" style="flex: 1;">
+        <div class="card__head">
+          <div class="kicker">Line Chart (1998-2020)</div>
+          <h2 id="line-title">Malaysia Air Pollution Index (Maximum) by State, 1998-2020</h2>
+          <p class="desc">
+            This line chart tracks the maximum air pollution index (API) for various states from 1998 to 2020.
+          </p>
+        </div>
+        <div class="viz">
+          <div id="viz-line" role="img" aria-label="Line chart of Air Pollution Index for various states"></div>
+        </div>
+      </section>
+
+      <!-- Dot Plot Section -->
+      <section class="card" aria-labelledby="dot-title" style="flex: 1;">
+        <div class="card__head">
+          <div class="kicker">Dot Plot (2020)</div>
+          <h2 id="dot-title">Malaysia Air Pollution Index — Min vs Max by State (2020)</h2>
+          <p class="desc">
+            This dot plot shows the minimum and maximum air pollution index values for different states in 2020.
+          </p>
+        </div>
+        <div class="viz">
+          <div id="viz-dot" role="img" aria-label="Dot plot of Min and Max API values for states in 2020"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Bottom Row: Bubble Chart -->
+    <section class="card" aria-labelledby="bubble-title">
+      <div class="card__head">
+        <div class="kicker">Bubble Chart</div>
+        <h2 id="bubble-title">Relationship between Maximum Air Pollution Index and Forest Coverage</h2>
+        <p class="desc">
+          This bubble chart shows the relationship between the maximum air pollution index (API) and the forest coverage percentage across different states.
+        </p>
+      </div>
+      <div class="viz">
+        <div id="viz-bubble" role="img" aria-label="Bubble chart of relationship between Maximum API and forest coverage"></div>
+      </div>
+    </section>
+
+    <!-- Footer: Data Source Information -->
+    <footer>
+      <strong>Data Source: </strong>
+      <p>Author: OpenDOSM (Department of National Statistics, Malaysia)</p>
+      <p>Link: 
+        <a href = "https://open.dosm.gov.my/data-catalogue/forest_reserve_state">
+        Click here to view the source website.
+      </a></p>
+      <p>Information: Permanent Forest Reserve Areas by State - Year-end permanent forest reserve areas by state. Data as of 2021.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Choropleth Map
+    const specMap = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Choropleth of Malaysia states - permanent forest area percentage (2021). Ocean = blue, graticule included.",
+  "title": "The Permanent Forest Coverage of Malaysia in 2021",
+  "width": 700,
+  "height": 400,
+  "background": "#cfeeff",
+  "layer": [
+    {
+      "name": "graticule",
+      "data": {"graticule":  {
+      "step": [5, 5]
+      }
+    },
+      "mark": {
+        "type": "geoshape",
+        "stroke": "#b8d0e6",
+        "strokeWidth": 0.6,
+        "fill": null
+      },
+      "projection": {"type": "mercator", "center": [109, 4], "scale": 1700}
+    },
+    {
+      "name": "states",
+      "data": {
+        "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Week9-Homework/refs/heads/main/malaysia-states.topojson",
+        "format": {"type": "topojson", "feature": "states"}
+      },
+      "transform": [
+        {
+          "lookup": "properties.Name",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/forest_coverage_clean.csv",
+              "format": {"type": "csv"}
+            },
+            "key": "name",
+            "fields": ["forest_cover_rate_percentage"]
+          }
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "stroke": "#666666",
+        "strokeWidth": 0.6
+      },
+      "encoding": {
+        "color": {
+          "field": "forest_cover_rate_percentage",
+          "type": "quantitative",
+          "title": "Permanent Forest Coverage (%)",
+          "scale": {
+            "type": "threshold",
+            "domain": [10, 20, 30, 40, 50, 60],
+            "range": ["#EBFAEA", "#A3EA9F", "#5AD954", "#2CAB26", "#23861D", "#196015", "#051505"]
+          },
+          "legend": {
+            "orient": "right",
+            "titleLimit": 180,
+            "symbolType": "square"
+          }
+        },
+        "tooltip": [
+          {"field": "properties.Name", "type": "nominal", "title": "State"},
+          {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest Coverage (%)", "format": ".1f"}
+        ]
+      },
+      "projection": {"type": "mercator", "center": [109, 4], "scale": 1200}
+    }
+  ],
+  "config": {
+    "view": {"stroke": "transparent"},
+    "axis": {"domain": false}
+  }
+};
+
+    // Isotype Chart
+    const specIso = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json",
+  "description": "Isotype-style: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003–2021. Increased horizontal spacing for emojis.",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/forest_coverage_clean.csv",
+    "format": {"type": "csv"}
+  },
+  "params": [
+    {
+      "name": "Choose_Year",
+      "value": 2003,
+      "bind": {"input": "range", "min": 2003, "max": 2021, "step": 1},
+      "description": "Choose year"
+    }
+  ],
+  "transform": [
+    {"calculate": "toNumber(substring(datum.date, 0, 4))", "as": "year"},
+    {"filter": "datum.year == Choose_Year"},
+    {
+      "calculate": "min(7, ceil(toNumber(datum.forest_cover_rate_percentage) / 10))",
+      "as": "nIcons"
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "name",
+      "type": "nominal",
+      "title": "States",
+      "sort": {"field": "forest_cover_rate_percentage", "op": "mean", "order": "descending"}
+    },
+    "tooltip": [
+      {"field": "name", "type": "nominal", "title": "State"},
+      {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest cover (%)"},
+      {"field": "nIcons", "type": "quantitative", "title": "Number of trees (per 10%)"}
+    ]
+  },
+  "layer": [
+    {
+      "transform": [{"filter": "datum.nIcons >= 1"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 20}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 2"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 60}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 3"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 100}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 4"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 140}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 5"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 180}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 6"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 220}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+    {
+      "transform": [{"filter": "datum.nIcons >= 7"}],
+      "mark": {"type": "text", "fontSize": 26, "align": "center", "baseline": "middle"},
+      "encoding": {"x": {"value": 260}, "y": {"field": "name"}, "text": {"value": "🌳"}}
+    },
+
+    {
+      "mark": {
+        "type": "rect",
+        "fill": "lightgreen",
+        "stroke": null,
+        "opacity": 1,
+        "zindex": 0
+      },
+      "encoding": {
+        "x": {"value": 140},
+        "y": {"value": 200},
+        "x2": {"value": 488},
+        "y2": {"value": 260}
+      }
+    },
+
+    {
+      "mark": {
+        "type": "text",
+        "fontSize": 14,
+        "color": "darkgreen",
+        "align": "left",
+        "baseline": "top",
+        "lineBreak": "\n",
+        "zindex": 1
+      },
+      "encoding": {
+        "x": {"value": 145},
+        "y": {"value": 207},
+        "text": {
+          "value": "Malaysia's overall forest cover stands at approximately \n40%, with no significant change observed between \n2003 and 2021."
+        }
+      }
+    }
+  ],
+  "width": 500,
+  "height": {"step": 30},
+  "title": "Malaysia Permanent Forest Coverage from 2003 to 2021",
+  "config": {
+    "axis": {"labelFontSize": 12, "titleFontSize": 13},
+    "title": {"fontSize": 14}
+  }
+};
+
+    // Bullet Chart
+    const specBullet = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Comparison of Forest Coverage in 2021 with the Overall Average",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/forest_coverage_clean.csv",
+    "format": {"type": "csv"}
+  },
+  "width": 400,
+  "height": {"step": 24},
+  "layer": [
+    {
+      "transform": [
+        {
+          "joinaggregate": [
+            {"op": "mean", "field": "forest_cover_rate_percentage", "as": "avg_2003_2021"}
+          ],
+          "groupby": ["name"]
+        },
+        {"filter": {"field": "date", "timeUnit": "year", "equal": 2021}}
+      ],
+      "mark": {"type": "bar", "tooltip": true, "cornerRadiusEnd": 3},
+      "encoding": {
+        "y": {"field": "name", "type": "nominal", "title": "States", "sort": "-x"},
+        "x": {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest Coverage (%)"},
+        "color": {"field": "name", "type": "nominal", "title": "State", "scale": {"scheme": "tableau20"}},
+        "tooltip": [
+          {"field": "name", "type": "nominal", "title": "State:"},
+          {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest Coverage in 2021 (%):", "format": ".2f"},
+          {"field": "avg_2003_2021", "type": "quantitative", "title": "Average Proportion 2003 - 2021 (%):", "format": ".2f"}
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "aggregate": [
+            {"op": "mean", "field": "forest_cover_rate_percentage", "as": "avg_2003_2021"}
+          ],
+          "groupby": ["name"]
+        }
+      ],
+      "mark": {"type": "tick", "color": "red", "thickness": 3},
+      "encoding": {
+        "x": {"field": "avg_2003_2021", "type": "quantitative"},
+        "y": {"field": "name", "type": "nominal"},
+        "size": {"value": 20},
+        "tooltip": [
+          {"field": "name", "type": "nominal", "title": "State:"},
+          {"field": "avg_2003_2021", "type": "quantitative", "title": "Average Proportion 2003 - 2021 (%):", "format": ".2f"}
+        ]
+      }
+    },
+
+    {
+      "name": "annotation-connector",
+      "transform": [
+        {"filter": {"field": "date", "timeUnit": "year", "equal": 2021}},
+        {"filter": "datum.name === 'Sarawak'"},
+        {"calculate": "datum.forest_cover_rate_percentage + 6", "as": "x_anno"}
+      ],
+      "mark": {
+        "type": "rule",
+        "stroke": "darkgreen",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "y": {"field": "name", "type": "nominal"},
+        "x": {"field": "forest_cover_rate_percentage", "type": "quantitative"},
+        "x2": {"field": "x_anno", "type": "quantitative"}
+      }
+    },
+    {
+  "name": "annotation-box",
+  "transform": [
+    {"filter": {"field": "date", "timeUnit": "year", "equal": 2021}},
+    {"filter": "datum.name === 'Sarawak'"},
+    {"calculate": "datum.forest_cover_rate_percentage + 6", "as": "x_anno"}
+  ],
+  "mark": {
+    "type": "rect",
+    "width": 220,   
+    "height": 48,       
+    "fillOpacity": 0,
+    "stroke": "darkgreen",
+    "strokeWidth": 1.5,
+    "cornerRadius": 6,
+    "xOffset": 180, 
+    "yOffset": 15 
+  },
+  "encoding": {
+    "x": {"field": "x_anno", "type": "quantitative"},
+    "y": {"field": "name", "type": "nominal"}
+  }
+}
+,
+    {
+  "name": "annotation-text",
+  "transform": [
+    {"filter": {"field": "date", "timeUnit": "year", "equal": 2021}},
+    {"filter": "datum.name === 'Sarawak'"},
+    {"calculate": "datum.forest_cover_rate_percentage + 6", "as": "x_anno"}
+  ],
+  "mark": {
+    "type": "text",
+    "align": "left",
+    "baseline": "top",
+    "fontSize": 12,
+    "fontWeight": "normal",
+    "color": "darkgreen",
+    "lineHeight": 14
+  },
+  "encoding": {
+    "x": {"field": "x_anno", "type": "quantitative"},
+    "y": {"field": "name", "type": "nominal"},
+    "xOffset": {"value": 73}, 
+    "yOffset": {"value": 6},
+    "text": {
+      "value": [
+        "Sarawak's forest cover in 2021 differs",
+        "most significantly from the average,",
+        "with a deviation of approximately 4%."
+      ]
+    }
+  }
+}
+,
+    {
+  "name": "custom-line",
+  "mark": {"type": "rule", "stroke": "darkgreen", "strokeWidth": 2},
+  "encoding": {
+    "x": {"datum": 36}, 
+    "x2": {"datum": 43.5},
+    "y": {"datum": "Sarawak", "type": "nominal"}, 
+    "yOffset": {"value": 12}
+  }
+}
+
+  ],
+  "config": {
+    "axis": {"labelFontSize": 12, "titleFontSize": 12},
+    "bar": {"height": 14}
+  }
+};
+
+    // Line Chart
+    const specLine = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Malaysia Air Pollution Index (Maximum) by State, 1998-2020",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/Air_Pollution_Index.csv",
+    "format": {"type": "csv"}
+  },
+  "width": 780,
+  "height": 420,
+  "transform": [
+    {"filter": "datum.Year >= 1998 && datum.Year <= 2020"},
+    {
+      "filter": {
+        "field": "State",
+        "oneOf": [
+          "Melaka",
+          "W.P. Kuala Lumpur",
+          "Sabah",
+          "Johor",
+          "Sarawak",
+          "Pulau Pinang"
+        ]
+      }
+    }
+  ],
+  "layer": [
+    {
+      "mark": {"type": "line", "strokeWidth": 2, "point": {"filled": true, "size": 60}},
+      "encoding": {
+        "x": {"field": "Year", "type": "quantitative", "title": "Year", "axis": {"format": "d", "tickMinStep": 1}},
+        "y": {"field": "Maximum", "type": "quantitative", "title": "Maximum API"},
+        "color": {
+          "field": "State",
+          "type": "nominal",
+          "legend": {"title": "State", "orient": "top"},
+          "scale": {
+            "domain": ["Melaka","W.P. Kuala Lumpur","Sabah","Johor","Sarawak","Pulau Pinang"],
+            "range": ["#FFA500","#808080","#8DB4CC","#21506E","#C92D26","#287CAD"]
+          }
+        },
+        "tooltip": [
+          {"field": "State", "type": "nominal", "title": "State"},
+          {"field": "Year", "type": "quantitative", "title": "Year"},
+          {"field": "Maximum", "type": "quantitative", "title": "Maximum"}
+        ]
+      }
+    },
+
+    {
+      "data": {"values": [
+        {"x": 2020, "y": 200, "y2": 450}  
+      ]},
+      "mark": {"type": "line", "stroke": "#000c03", "strokeWidth": 2},
+      "encoding": {
+        "x": {"field": "x", "type": "quantitative"},
+        "y": {"field": "y", "type": "quantitative"},
+        "y2": {"field": "y2", "type": "quantitative"}
+      }
+    },
+
+    {
+      "data": {"values": [{}]},
+      "mark": {"type": "rect", "fill": null, "stroke": "#000c03", "strokeWidth": 2},
+      "encoding": {
+        "x": {"datum": 2013},
+        "x2": {"datum": 2020},
+        "y": {"datum": 450},
+        "y2": {"datum": 520}
+      }
+    },
+
+    {
+      "data": {"values": [{}]},
+      "mark": {"type": "text", "align": "left", "fontSize": 12, "fill": "#000c03"},
+      "encoding": {
+        "x": {"datum": 2013.5},
+        "y": {"datum": 495},
+        "text": {"value":   ["In 2020, the maximum API values across", "the states were most closely aligned."]}
+      }
+    }
+  ]
+};
+
+    // Dot Plot
+    const specDot = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Malaysia Air Pollution Index — Min vs Max by State (2020)",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/Air_Pollution_Index.csv",
+    "format": {"type": "csv"}
+  },
+  "width": 760,
+  "height": {"step": 26},
+  "transform": [
+    {"filter": "toNumber(datum.Year) == 2020"},
+    {"calculate": "toNumber(datum.Minimum)", "as": "Minimum_API"},
+    {"calculate": "toNumber(datum.Maximum)", "as": "Maximum_API"},
+    {"calculate": "datum.Maximum_API - datum.Minimum_API", "as": "Diff"}
+  ],
+  "layer": [
+    {
+      "mark": {"type": "rule", "stroke": "black", "strokeWidth": 1.2},
+      "encoding": {
+        "y": {"field": "State", "type": "nominal"},
+        "x": {"field": "Minimum_API", "type": "quantitative", "title": "API"},
+        "x2": {"field": "Maximum_API"},
+        "tooltip": [
+          {"field": "State", "type": "nominal"},
+          {"field": "Minimum_API", "type": "quantitative", "title": "Minimum"},
+          {"field": "Maximum_API", "type": "quantitative", "title": "Maximum"},
+          {"field": "Diff", "type": "quantitative", "title": "Max - Min"}
+        ]
+      }
+    },
+    {
+      "transform": [
+        {"fold": ["Minimum_API", "Maximum_API"], "as": ["Type", "API_Value"]}
+      ],
+      "mark": {"type": "point", "filled": true, "size": 70},
+      "encoding": {
+        "y": {"field": "State", "type": "nominal"},
+        "x": {"field": "API_Value", "type": "quantitative"},
+        "color": {
+          "field": "Type",
+          "type": "nominal",
+          "title": "API Type",
+          "scale": {
+            "domain": ["Maximum_API", "Minimum_API"],
+            "range": ["#470570", "#A72CF5"]
+          },
+          "legend": {"title": "Point"}
+        },
+        "tooltip": [
+          {"field": "State", "type": "nominal"},
+          {"field": "Type", "type": "nominal", "title": "Type"},
+          {"field": "API_Value", "type": "quantitative", "title": "API Value"}
+        ]
+      }
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "State",
+      "type": "nominal",
+      "title": "State",
+      "sort": {"field": "Diff", "op": "max", "order": "descending"}
+    }
+  },
+  "config": {
+    "axis": {
+      "labelFontSize": 12,
+      "titleFontSize": 12
+    },
+    "legend": {
+      "labelFontSize": 12,
+      "titleFontSize": 12,
+      "symbolSize": 100
+    }
+  }
+};
+
+    // Bubble Chart
+    const specBubble = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Bubble chart showing relationship between forest coverage and air pollution with a regression trend line and annotations.",
+  "title": "Relationship between Maximum Air Pollution Index and Forest Coverage",
+  "data": {
+    "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/Coverage_API.csv"
+  },
+  "layer": [
+    {
+      "mark": "circle",
+      "encoding": {
+        "x": {
+          "field": "forest_cover_rate_percentage",
+          "type": "quantitative",
+          "title": "Forest Coverage (%)"
+        },
+        "y": {
+          "field": "Maximum",
+          "type": "quantitative",
+          "title": "Maximum Air Pollution Index (API)"
+        },
+        "size": {
+          "field": "total_area",
+          "type": "quantitative",
+          "scale": {
+            "domain": [0, 12000000],
+            "range": [400, 1000]
+          },
+          "title": "Total Area"
+        },
+        "color": {
+          "field": "State",
+          "type": "nominal",
+          "scale": {
+            "domain": ["Johor", "Melaka", "Pulau Pinang", "Sabah", "Sarawak", "W.P. Kuala Lumpur"],
+            "range": ["#062670", "#ED8A15", "#045161", "#4A9FC7", "#D40808", "#808080"]
+          },
+          "legend": {
+            "title": "State",
+            "symbolSize": 100
+          }
+        },
+        "tooltip": [
+          {"field": "State", "type": "nominal", "title": "State"},
+          {"field": "Maximum", "type": "quantitative", "title": "Maximum API"},
+          {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest Coverage (%)"},
+          {"field": "total_area", "type": "quantitative", "title": "Total Area"}
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "regression": "Maximum",
+          "on": "forest_cover_rate_percentage"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "color": "black",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "forest_cover_rate_percentage",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "Maximum",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "rect",
+        "fill": "transparent",
+        "stroke": "green",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "x": {"value": 50},
+        "x2": {"value": 280},
+        "y": {"value": 200},
+        "y2": {"value": 290}
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "baseline": "top",
+        "fontSize": 12,
+        "dx": 6,
+        "dy": 6,
+        "color": "green"
+      },
+      "encoding": {
+        "x": {"value": 50},
+        "y": {"value": 200},
+        "text": {
+          "value": ["The data for Sarawak are most pertinent", "with regression line of relationship", "between Max API & Forest Coverage", "demonstrating that the maximum", "air pollution index correlates with forest", "cover at a ratio of approximately 1 : 3."]
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "rule",
+        "stroke": "green",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "x": {"value": 148},   // 控制垂直线的横向位置
+        "y": {"value": 120},   // 起点（下方）
+        "y2": {"value": 200}  // 终点（上方）
+      }
+    }
+  ]
+};
+
+    vegaEmbed("#viz-map", specMap, {actions: false, renderer: "canvas"}).catch(console.error);
+    vegaEmbed("#viz-iso", specIso, {actions: false, renderer: "canvas"}).catch(console.error);
+    vegaEmbed("#viz-bullet", specBullet, {actions: false, renderer: "canvas"}).catch(console.error);
+    vegaEmbed("#viz-line", specLine, {actions: false, renderer: "canvas"}).catch(console.error);
+    vegaEmbed("#viz-dot", specDot, {actions: false, renderer: "canvas"}).catch(console.error);
+    vegaEmbed("#viz-bubble", specBubble, {actions: false, renderer: "canvas"}).catch(console.error);
+
+    const resizeMap = () => {
+      const mapEl = document.querySelector("#viz-map");
+      if (!mapEl) return;
+      const containerWidth = mapEl.clientWidth || mapEl.parentElement.clientWidth;
+      mapEl.style.maxWidth = "100%";
+    };
+    window.addEventListener("resize", resizeMap);
+    resizeMap();
+  </script>
+</body>
+</html>
