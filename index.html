@@ -220,7 +220,7 @@
       <section class="card" aria-labelledby="iso-title" style="flex: 1;">
         <div class="card__head">
           <div class="kicker">Isotype (2003 - 2021)</div>
-          <h2 id="iso-title">Forest cover rates for each state represented by emojis🌳 (with year slider)</h2>
+          <h2 id="iso-title">Forest Cover rates for Each State Represented by Emojis🌳 (with Year Slider)</h2>
           <p class="desc">
             Presented using isotype: each tree represents approximately 10% of permanent forest cover. 
             Drag the slider to view a year-on-year comparison for any year between 2003 and 2021.
@@ -252,6 +252,15 @@
         <div class="viz">
           <div id="viz-bullet" role="img" aria-label="Bullet chart comparing forest coverage with average for 2021"></div>
         </div>
+        <div class="caption">
+            <strong>Key Points:</strong>
+            <ul class="keypoints">
+              <li class="chip">The number of trees directly corresponds to the coverage rate (one tree per 10%, rounded up).</li>
+              <li class="chip">The data for Sarawak in 2010 and 2011 were not available (NA), so the mean value for Sarawak across the 
+                entire time period was used to impute the missing values during dataset cleaning.</li>
+              <li class="chip">Use the slider to select a year, enabling cross-year comparisons and trend analysis.</li>
+            </ul>
+          </div>
       </section>
     </div>
 
@@ -391,9 +400,9 @@
 };
 
     // Isotype Chart
-    const specIso = {
+    const specIso =  {
   "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json",
-  "description": "Isotype-style: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003–2021. Increased horizontal spacing for emojis.",
+  "description": "Isotype-style: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003-2021. Increased horizontal spacing for emojis.",
   "data": {
     "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/forest_coverage_clean.csv",
     "format": {"type": "csv"}
@@ -474,9 +483,9 @@
       },
       "encoding": {
         "x": {"value": 120},
-        "y": {"value": 200},
+        "y": {"value": 165},
         "x2": {"value": 488},
-        "y2": {"value": 260}
+        "y2": {"value": 220}
       }
     },
 
@@ -492,7 +501,7 @@
       },
       "encoding": {
         "x": {"value": 125},
-        "y": {"value": 207},
+        "y": {"value": 171},
         "text": {
           "value": "Malaysia's overall forest cover stands at approximately \n40%, with no significant change observed between \n2003 and 2021."
         }
@@ -500,7 +509,7 @@
     }
   ],
   "width": 500,
-  "height": {"step": 30},
+  "height": {"step": 26},
   "title": "Malaysia Permanent Forest Coverage from 2003 to 2021",
   "config": {
     "axis": {"labelFontSize": 12, "titleFontSize": 13},
@@ -517,7 +526,7 @@
     "format": {"type": "csv"}
   },
   "width": 400,
-  "height": {"step": 24},
+  "height": {"step": 25},
   "layer": [
     {
       "transform": [

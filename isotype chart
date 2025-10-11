@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v6.1.0.json",
-  "description": "Isotype-style: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003–2021. Increased horizontal spacing for emojis.",
+  "description": "Isotype-style: 🌳 per 10% forest cover (capped at 7 = 70%). Slider selects year 2003-2021. Increased horizontal spacing for emojis.",
   "data": {
     "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/forest_coverage_clean.csv",
     "format": {"type": "csv"}
@@ -80,10 +80,10 @@
         "zindex": 0
       },
       "encoding": {
-        "x": {"value": 140},
-        "y": {"value": 200},
+        "x": {"value": 120},
+        "y": {"value": 165},
         "x2": {"value": 488},
-        "y2": {"value": 260}
+        "y2": {"value": 220}
       }
     },
 
@@ -98,8 +98,8 @@
         "zindex": 1
       },
       "encoding": {
-        "x": {"value": 145},
-        "y": {"value": 207},
+        "x": {"value": 125},
+        "y": {"value": 171},
         "text": {
           "value": "Malaysia's overall forest cover stands at approximately \n40%, with no significant change observed between \n2003 and 2021."
         }
@@ -107,7 +107,7 @@
     }
   ],
   "width": 500,
-  "height": {"step": 30},
+  "height": {"step": 26},
   "title": "Malaysia Permanent Forest Coverage from 2003 to 2021",
   "config": {
     "axis": {"labelFontSize": 12, "titleFontSize": 13},
