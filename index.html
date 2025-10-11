@@ -302,10 +302,8 @@
         <div class="caption">
             <strong>Key Points:</strong>
             <ul class="keypoints">
-              <li class="chip">Most states recorded higher forest cover in 2021 than their long-term average, indicating that forest 
-                cover is increasing in the majority of states.</li></li>
-              <li class="chip">Due to the low forest cover in Kuala Lumpur, which makes it difficult to click on the bar chart for viewing, the values are listed here for readers: 
-                the value for 2021 is 0.28%, and the average for 2003-2021 is 0.27%.</li>
+              <li class="chip">Sabah's Maximum API remained the most stable, showing minimal fluctuation between 1998 and 2020. Its peak value occurred in 2019, registering at 252.</li></li>
+              <li class="chip">In 2020, maximum API values across states converged, with pollution levels becoming relatively comparable, suggesting that nationwide environmental or policy factors may have emerged that year, leading to a convergence in air quality changes across regions.</li>
             </ul>
         </div>
       </section>
@@ -321,6 +319,13 @@
         </div>
         <div class="viz">
           <div id="viz-dot" role="img" aria-label="Dot plot of Min and Max API values for states in 2020"></div>
+        </div>
+        <div class="caption">
+            <strong>Key Points:</strong>
+            <ul class="keypoints">
+              <li class="chip">Although minimum API values remain relatively similar, maximum API values in certain states have risen significantly, particularly in areas such as Kuala Lumpur, indicating that more severe air pollution episodes occasionally occur in these locations.</li></li>
+              <li class="chip">Sabah has the lowest API value and the smallest difference between its minimum and maximum API values.</li>
+            </ul>
         </div>
       </section>
     </div>
@@ -785,7 +790,7 @@
     "format": {"type": "csv"}
   },
   "width": 400,
-  "height": {"step": 26},
+  "height": {"step": 53},
   "transform": [
     {"filter": "toNumber(datum.Year) == 2020"},
     {"calculate": "toNumber(datum.Minimum)", "as": "Minimum_API"},

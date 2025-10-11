@@ -6,7 +6,7 @@
     "format": {"type": "csv"}
   },
   "width": 400,
-  "height": {"step": 26},
+  "height": {"step": 53},
   "transform": [
     {"filter": "toNumber(datum.Year) == 2020"},
     {"calculate": "toNumber(datum.Minimum)", "as": "Minimum_API"},
