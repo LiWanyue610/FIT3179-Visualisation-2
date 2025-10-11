@@ -74,7 +74,7 @@
       "mark": {"type": "text", "align": "left", "fontSize": 12, "fill": "#000c03"},
       "encoding": {
         "x": {"datum": 2011.6},
-        "y": {"datum": 503},
+        "y": {"datum": 504},
         "text": {"value":   ["In 2020, the maximum API values across", "the states were most closely aligned."]}
       }
     }

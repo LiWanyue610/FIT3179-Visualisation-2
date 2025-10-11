@@ -83,6 +83,20 @@
     justify-content: center;
     align-items: center;
     }
+    .card_choropleth{
+    background: #f1f1fb;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin: 10px 0;
+    flex: 1 1 48%;  /* Allow wrapping and adapt card width */
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    }
     .card__head {
       padding: 18px 20px 0;
     }
@@ -191,7 +205,7 @@
     </header>
 
     <!-- First Row: Choropleth Map -->
-    <section class="card" aria-labelledby="map-title">
+    <section class="card_choropleth" aria-labelledby="map-title">
       <div class="card__head">
         <div class="kicker">Choropleth Map (2021)</div>
         <h2 id="map-title">Malaysian State Permanent Forest Coverage in 2021</h2>
@@ -213,6 +227,14 @@
         </ul>
       </div>
     </section>
+    <footer>
+        <p>This choropleth map constitutes the most crucial component of this visualisation study (the highest visual level), as it provides readers with the most intuitive and 
+            evident representation of Malaysia's forest cover distribution in 2021. Malaysia's forest cover accounts for approximately 54-55% of its total land area, totalling 
+            around 18.2 million hectares. Malaysia first committed at the 1992 Rio Earth Summit to maintaining at least 50% of its territory as forest, enshrining this pledge 
+            within its National Forest Policy.
+        </p>
+      </footer>
+    </div>
 
     <!-- Second Row: Isotype and Bullet Chart -->
     <div style="display: flex; gap: 20px;">
@@ -235,7 +257,6 @@
             <li class="chip">The number of trees directly corresponds to the coverage rate (one tree per 10%, rounded up).</li>
             <li class="chip">The data for Sarawak in 2010 and 2011 were not available (NA), so the mean value for Sarawak across the 
               entire time period was used to impute the missing values during dataset cleaning.</li>
-            <li class="chip">Use the slider to select a year, enabling cross-year comparisons and trend analysis.</li>
           </ul>
         </div>
       </section>
@@ -255,12 +276,12 @@
         <div class="caption">
             <strong>Key Points:</strong>
             <ul class="keypoints">
-              <li class="chip">The number of trees directly corresponds to the coverage rate (one tree per 10%, rounded up).</li>
-              <li class="chip">The data for Sarawak in 2010 and 2011 were not available (NA), so the mean value for Sarawak across the 
-                entire time period was used to impute the missing values during dataset cleaning.</li>
-              <li class="chip">Use the slider to select a year, enabling cross-year comparisons and trend analysis.</li>
+              <li class="chip">Most states recorded higher forest cover in 2021 than their long-term average, indicating that forest 
+                cover is increasing in the majority of states.</li></li>
+              <li class="chip">Due to the low forest cover in Kuala Lumpur, which makes it difficult to click on the bar chart for viewing, the values are listed here for readers: 
+                the value for 2021 is 0.28%, and the average for 2003-2021 is 0.27%.</li>
             </ul>
-          </div>
+        </div>
       </section>
     </div>
 
@@ -277,6 +298,15 @@
         </div>
         <div class="viz">
           <div id="viz-line" role="img" aria-label="Line chart of Air Pollution Index for various states"></div>
+        </div>
+        <div class="caption">
+            <strong>Key Points:</strong>
+            <ul class="keypoints">
+              <li class="chip">Most states recorded higher forest cover in 2021 than their long-term average, indicating that forest 
+                cover is increasing in the majority of states.</li></li>
+              <li class="chip">Due to the low forest cover in Kuala Lumpur, which makes it difficult to click on the bar chart for viewing, the values are listed here for readers: 
+                the value for 2021 is 0.28%, and the average for 2003-2021 is 0.27%.</li>
+            </ul>
         </div>
       </section>
 
@@ -526,7 +556,7 @@
     "format": {"type": "csv"}
   },
   "width": 400,
-  "height": {"step": 25},
+  "height": {"step": 26},
   "layer": [
     {
       "transform": [
@@ -739,7 +769,7 @@
       "mark": {"type": "text", "align": "left", "fontSize": 12, "fill": "#000c03"},
       "encoding": {
         "x": {"datum": 2011.6},
-        "y": {"datum": 503},
+        "y": {"datum": 504},
         "text": {"value":   ["In 2020, the maximum API values across", "the states were most closely aligned."]}
       }
     }
