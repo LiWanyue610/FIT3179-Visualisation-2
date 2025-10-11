@@ -41,7 +41,7 @@
         "tooltip": [
           {"field": "State", "type": "nominal", "title": "State"},
           {"field": "Year", "type": "quantitative", "title": "Year"},
-          {"field": "Maximum", "type": "quantitative", "title": "Maximum"}
+          {"field": "Maximum", "type": "quantitative", "title": "Maximum API"}
         ]
       }
     },
