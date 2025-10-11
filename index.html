@@ -662,7 +662,7 @@
     "format": {"type": "csv"}
   },
   "width": 600,
-  "height": 320,
+  "height": 250,
   "transform": [
     {"filter": "datum.Year >= 1998 && datum.Year <= 2020"},
     {
@@ -721,7 +721,7 @@
         "x": {"datum": 2011.5},
         "x2": {"datum": 2020},
         "y": {"datum": 450},
-        "y2": {"datum": 520}
+        "y2": {"datum": 530}
       }
     },
 
@@ -730,7 +730,7 @@
       "mark": {"type": "text", "align": "left", "fontSize": 12, "fill": "#000c03"},
       "encoding": {
         "x": {"datum": 2011.6},
-        "y": {"datum": 497},
+        "y": {"datum": 503},
         "text": {"value":   ["In 2020, the maximum API values across", "the states were most closely aligned."]}
       }
     }
@@ -745,7 +745,7 @@
     "url": "https://raw.githubusercontent.com/LiWanyue610/FIT3179-Visualisation-2/refs/heads/main/Air_Pollution_Index.csv",
     "format": {"type": "csv"}
   },
-  "width": 760,
+  "width": 400,
   "height": {"step": 26},
   "transform": [
     {"filter": "toNumber(datum.Year) == 2020"},
