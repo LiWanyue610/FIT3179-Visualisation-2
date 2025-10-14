@@ -83,20 +83,6 @@
     justify-content: center;
     align-items: center;
     }
-    .card_choropleth{
-    background: #5c9c70;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    margin: 10px 0;
-    flex: 1 1 48%;  /* Allow wrapping and adapt card width */
-    max-width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    }
     .card__head {
       padding: 18px 20px 0;
     }
@@ -107,24 +93,12 @@
       letter-spacing: .05em;
       text-transform: uppercase;
     }
-    .kicker_choropleth{
-    font-weight: 600;
-      font-size: 13px;
-      color: #e5feeb;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-    }
     h2 {
       margin: 6px 0 10px;
       font-size: clamp(18px, 2.6vw, 24px);
     }
     .desc {
       color: var(--muted);
-      margin: 0 0 14px;
-      font-size: 15px;
-    }
-    .desc_choropleth {
-      color: #ebf6f9;
       margin: 0 0 14px;
       font-size: 15px;
     }
@@ -147,13 +121,6 @@
       border-top: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
     }
-    .caption_choropleth {
-      padding: 2px 20px 18px;
-      color: #e5feeb;
-      font-size: 14px;
-      border-top: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
-    }
     .keypoints {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -166,30 +133,11 @@
       border-radius: 16px;
       color:rgb(240, 255, 253);
     }
-    .keypoints_choropleth {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-      margin: 12px 0 0;
-      padding: 0;
-      list-style: none;
-      background:#e5feeb;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      color:rgb(5, 77, 27);
-    }
     .chip {
       border: 1px dashed var(--border);
       padding: 10px 12px;
       border-radius: 10px;
       background: rgba(255,255,255,0.02);
-      font-size: 13.5px;
-    }
-    .chip_choropleth {
-      border: 1px dashed var(--border);
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #dcfce3;
       font-size: 13.5px;
     }
     footer {
@@ -249,10 +197,10 @@
     </header>
 
     <!-- First Row: Choropleth Map -->
-    <section class="card_choropleth" aria-labelledby="map-title">
+    <section class="card" aria-labelledby="map-title">
       <div class="card__head">
         <h2 id="map-title">Malaysian State Permanent Forest Coverage in 2021</h2>
-        <p class="desc_choropleth">
+        <p class="desc">
           This choropleth map depicts state boundaries against a backdrop of a graticule and oceanic base colour, 
           with areas shaded according to permanent forest cover percentage. Hovering the mouse reveals state names and specific coverage.
         </p>
@@ -260,13 +208,13 @@
       <div class="viz">
         <div id="viz-map" role="img" aria-label="2021 Choropleth Map of Permanent Forest Cover by State in Malaysia"></div>
       </div>
-      <div class="caption_choropleth">
+      <div class="caption">
         <strong>Key Points:</strong>
-        <ul class="keypoints_choropleth">
-          <li class="chip_choropleth">Deeper green means higher forest coverage; The gaps are 10%, 20%, 30%, 40%, 50%, 60%.</li>
-          <li class="chip_choropleth">Regional differences: Forest cover in Sabah and Sarawak is generally higher than in western Malaysia. 
+        <ul class="keypoints">
+          <li class="chip">Deeper green means higher forest coverage; The gaps are 10%, 20%, 30%, 40%, 50%, 60%.</li>
+          <li class="chip">Regional differences: Forest cover in Sabah and Sarawak is generally higher than in western Malaysia. 
             The state with the highest forest cover in the west is Melaka (which also holds the highest forest cover across the whole of Malaysia).</li>
-          <li class="chip_choropleth">Protection effectiveness: Several states maintain forest cover exceeding 40%, demonstrating effective conservation measures.</li>
+          <li class="chip">Protection effectiveness: Several states maintain forest cover exceeding 40%, demonstrating effective conservation measures.</li>
         </ul>
       </div>
     </section>
@@ -453,10 +401,7 @@
   "layer": [
     {
       "name": "graticule",
-      "data": {"graticule":  {
-      "step": [5, 5]
-      }
-    },
+      "data": {"graticule": {"step": [5, 5]}},
       "mark": {
         "type": "geoshape",
         "stroke": "#b8d0e6",
@@ -509,6 +454,72 @@
           {"field": "properties.Name", "type": "nominal", "title": "State"},
           {"field": "forest_cover_rate_percentage", "type": "quantitative", "title": "Forest Coverage (%)", "format": ".1f"}
         ]
+      },
+      "projection": {"type": "mercator", "center": [109, 4], "scale": 1200}
+    },
+    {
+      "name": "annotation_line",
+      "data": {
+        "values": [
+          {"x": 101.7, "y": 3.15, "x2": 100.5, "y2": 1.8}
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#196015",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "longitude": {"field": "x", "type": "quantitative"},
+        "latitude": {"field": "y", "type": "quantitative"},
+        "longitude2": {"field": "x2"},
+        "latitude2": {"field": "y2"}
+      },
+      "projection": {"type": "mercator", "center": [109, 4], "scale": 1200}
+    },
+    {
+      "name": "annotation_rect",
+      "data": {
+        "values": [
+          {"x": 97.5, "y": 0.2, "x2": 102.5, "y2": 0.2, "edge": "bottom"},
+          {"x": 97.5, "y": 1.8, "x2": 102.5, "y2": 1.8, "edge": "top"},
+          {"x": 97.5, "y": 0.2, "x2": 97.5, "y2": 1.8, "edge": "left"},
+          {"x": 102.5, "y": 0.2, "x2": 102.5, "y2": 1.8, "edge": "right"}
+        ]
+      },
+      "mark": {
+        "type": "rule",
+        "color": "#196015",
+        "strokeWidth": 1.5
+      },
+      "encoding": {
+        "longitude": {"field": "x", "type": "quantitative"},
+        "latitude": {"field": "y", "type": "quantitative"},
+        "longitude2": {"field": "x2"},
+        "latitude2": {"field": "y2"}
+      },
+      "projection": {"type": "mercator", "center": [109, 4], "scale": 1200}
+    },
+    {
+      "name": "annotation_text",
+      "data": {
+        "values": [
+          {"x": 99.3, "y": 1.4, "text": "Kuala Lumpur:"},
+          {"x": 100, "y": 1.0, "text": "Permanent forest cover"},
+          {"x": 99.7, "y": 0.6, "text": "in 2021 was 0.28%."}
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "align": "center",
+        "fontSize": 12,
+        "font": "sans-serif",
+        "color": "#196015"
+      },
+      "encoding": {
+        "longitude": {"field": "x", "type": "quantitative"},
+        "latitude": {"field": "y", "type": "quantitative"},
+        "text": {"field": "text", "type": "nominal"}
       },
       "projection": {"type": "mercator", "center": [109, 4], "scale": 1200}
     }
